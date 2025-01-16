@@ -131,6 +131,13 @@ export default function DataGrid() {
     }));
   };
 
+  const deleteCol = (colId: string) => {
+    setData((prev) => ({
+      ...prev,
+      columns: prev.columns.filter((col) => col.id !== colId),
+    }));
+  };
+
   const handleDownload=(e: React.MouseEvent<HTMLButtonElement>)=>{
     e.preventDefault();
     if(!fileName){
@@ -248,7 +255,7 @@ export default function DataGrid() {
                             index === 0 ? "bg-[#FFF8E7]" : "bg-white"
                           }`}
                         >
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 group">
                             {index === 0 && <InputIcon />}
                             {index === 1 && <ActionIcon />}
                             {index === 2 && <EnrichIcon />}
@@ -260,6 +267,16 @@ export default function DataGrid() {
                               className="text-sm font-medium bg-transparent border-none p-0 focus-visible:ring-0"
                               placeholder="Enter column name"
                             />
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteCol(column.id)}
+                              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                            </Button>
+                          </div>
                           </div>
                         </th>
                       ))}
