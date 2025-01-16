@@ -1,19 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import {
-  ArrowLeft,
-  Search,
-  Filter,
-  ArrowDownUp,
-  Download,
-  Share2,
-  Trash2,
-  Plus,
-  ChevronRight,
-  Sparkles,
-  User,
-} from "lucide-react";
+import React, { useState } from "react";
+import { ArrowLeft, Search, Filter, ArrowDownUp, Download, Share2, Trash2, Plus, ChevronRight, Sparkles, User, Menu, Rows3, Columns3 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -88,6 +76,9 @@ export default function DataGrid() {
     ],
   });
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [fileName, setFileName]=useState("");
+
   const addRow = () => {
     setData((prev) => ({
       ...prev,
@@ -140,49 +131,48 @@ export default function DataGrid() {
     }));
   };
 
+  const handleDownload=(e: React.MouseEvent<HTMLButtonElement>)=>{
+    e.preventDefault();
+    if(!fileName){
+      alert("File Name if mandatory to download file!");
+      return;
+    }
+    exportToExcel(data, fileName);
+  }
+
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-2 bg-white border-b">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="text-gray-500">
+          <Button variant="ghost" size="icon" className="text-gray-500 md:hidden" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+            <Menu className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" className="text-black hidden md:inline-flex">
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-base font-normal">Name of the file</h1>
+          <input className="text-sm focus:ring-0 border-0 font-normal" placeholder="Name of the file" value={fileName} onChange={(e)=> setFileName(e.target.value)} />
         </div>
         <div className="flex gap-4 items-center justify-center">
-        {/* <div className="flex items-center gap-2">
-        <Switch className="mr-2 bg-gray-300 data-[state=checked]:bg-emerald-500" />
-          <span className="text-sm text-emerald-500 font-semibold">Auto Save</span>
-        </div> */}
-        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <Switch 
-              id="auto-save" 
-              className="bg-gray-200 border-2 border-emerald-400 data-[state=checked]:bg-emerald-500"
+              id="auto-save"
+              className="bg-gray-200 border border-emerald-400 data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-emerald-500"
             />
-            {/* <Switch 
-              id="auto-save" 
-              className="bg-gray-300 data-[state=checked]:bg-emerald-500 relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-            >
-              <span
-                aria-hidden="true"
-                className="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out translate-x-0 data-[state=checked]:translate-x-5"
-              />
-            </Switch> */}
-            <label htmlFor="auto-save" className="text-sm text-emerald-500 font-semibold">
+            <label htmlFor="auto-save" className="text-sm text-emerald-500 font-semibold hidden sm:inline-block">
               Auto Save
             </label>
           </div>
-        <div className="">
-          <User className="w-4 text-red-600" />
-        </div>
+          <div className="">
+            <User className="w-4 text-red-600" />
+          </div>
         </div>
       </header>
 
       {/* Grid with sidebar */}
-      <div className="flex flex-1">
+      <div className="flex flex-1 relative">
         {/* Sidebar */}
-        <div className="w-16 bg-white border-r">
+        <div className={`w-16 bg-white border-r absolute md:relative inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition duration-200 ease-in-out z-10`}>
           <div className="flex flex-col items-center p-4 gap-4">
             <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-600">
               <TableIcon />
@@ -202,215 +192,167 @@ export default function DataGrid() {
             <div className="overflow-hidden">
               {/* Toolbar */}
               <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-white border-b">
-                <div className="flex items-center justify-center">
-                  <div className="w-[200px] mr-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-center w-full sm:w-auto">
+                  <div className="w-ful lg:w-[500px] mb-2 sm:mb-0 sm:mr-4">
                     <div className="relative w-full">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-                      <Input placeholder="Search" className="pl-8 bg-white" />
+                      <Input placeholder="Search" className="pl-8 bg-white w-full border border-gray-300" />
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                      >
-                        <rect
-                          x="1"
-                          y="1"
-                          width="14"
-                          height="14"
-                          rx="2"
-                          stroke="currentColor"
-                        />
-                        <path d="M4 8h8M4 4h8M4 12h8" stroke="currentColor" />
-                      </svg>
-                      <span>{data.rows.length}/1 Row</span>
+                  <div className="flex items-center gap-4 text-sm text-gray-500 w-full sm:w-aut">
+                    <div className="flex items-center gap-2 whitespace-nowrap">
+                      <Rows3 className="w-5" />
+                      <span>{data.rows.length}/5 Row</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                      >
-                        <rect
-                          x="1"
-                          y="1"
-                          width="14"
-                          height="14"
-                          rx="2"
-                          stroke="currentColor"
-                        />
-                        <path d="M8 4v8M4 8h8" stroke="currentColor" />
-                      </svg>
+                    <div className="flex items-center gap-2 whitespace-nowrap">
+                      <Columns3 className="w-5" />
                       <span>{data.columns.length}/3 Column</span>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 border-0"
-                    >
+                    <div className="flex items-center gap-2 whitespace-nowrap">
                       <Filter className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 border-0"
-                    >
+                      <span>0 Filter</span>
+                    </div>
+                    <div className="flex items-center gap-2 whitespace-nowrap">
                       <ArrowDownUp className="h-4 w-4" />
-                    </Button>
+                      <span>Sort</span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mt-2 sm:mt-0">
                   <Button className="bg-[#1C2834] hover:bg-[#2C3844] text-white flex items-center justify-center">
-                    <Sparkles />
-                    Enrich
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Enrich</span>
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 border-0"
-                  >
+                  <Button variant="outline" size="icon" className="h-8 w-8 border-0">
                     <Share2 className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 border-0"
-                    onClick={() => exportToExcel(data)}
-                  >
+                  <Button variant="outline" size="icon" className="h-8 w-8 border-0" onClick={(e)=> handleDownload(e)}>
                     <Download className="h-4 w-4" />
                   </Button>
-
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 border-0"
-                  >
+                  <Button variant="outline" size="icon" className="h-8 w-8 border-0">
                     <Trash2 className="h-4 w-4" color="red" />
                   </Button>
                 </div>
               </div>
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead>
-                  <tr>
-                    <th className="w-12 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-white">
-                      #
-                    </th>
-                    {data.columns.map((column, index) => (
-                      <th
-                        key={column.id}
-                        className={`px-4 py-3 text-left ${
-                          index === 0 ? "bg-[#FFF8E7]" : "bg-white"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          {index === 0 && <InputIcon />}
-                          {index === 1 && <ActionIcon />}
-                          {index === 2 && <EnrichIcon />}
-                          <Input
-                            value={column.title}
-                            onChange={(e) =>
-                              updateColumnTitle(column.id, e.target.value)
-                            }
-                            className="text-sm font-medium bg-transparent border-none p-0 focus-visible:ring-0"
-                            placeholder="Enter column name"
-                          />
-                        </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr>
+                      <th className="w-12 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-white">
+                        #
                       </th>
-                    ))}
-                    <th className="w-12 px-4 py-3 bg-white">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={addColumn}
-                        className="h-6 w-6"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {data.rows.map((row, rowIndex) => (
-                    <tr key={row.id} className="hover:bg-gray-50 group">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <PlayIcon />
-                          <span className="text-sm text-gray-500">
-                            {rowIndex + 1}
-                          </span>
-                        </div>
-                      </td>
-                      {data.columns.map((column) => (
-                        <td
-                          key={`${row.id}-${column.id}`}
-                          className="px-4 py-3 whitespace-nowrap"
+                      {data.columns.map((column, index) => (
+                        <th
+                          key={column.id}
+                          className={`px-4 py-3 text-left ${
+                            index === 0 ? "bg-[#FFF8E7]" : "bg-white"
+                          }`}
                         >
-                          <div className="flex items-center gap-2 text-sm">
-                            {row.warning && column.id === "input" && (
-                              <WarningIcon />
-                            )}
-                            {row.link && column.id === "input" && (
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                              >
-                                <path d="M6 8h4M8 6v4" stroke="currentColor" />
-                              </svg>
-                            )}
+                          <div className="flex items-center gap-2">
+                            {index === 0 && <InputIcon />}
+                            {index === 1 && <ActionIcon />}
+                            {index === 2 && <EnrichIcon />}
                             <Input
-                              value={row.cells[column.id]}
+                              value={column.title}
                               onChange={(e) =>
-                                updateCellValue(
-                                  row.id,
-                                  column.id,
-                                  e.target.value
-                                )
+                                updateColumnTitle(column.id, e.target.value)
                               }
-                              className={`bg-transparent border-none p-0 focus-visible:ring-0 ${
-                                row.link && column.id === "input"
-                                  ? "text-blue-500 underline"
-                                  : ""
-                              }`}
+                              className="text-sm font-medium bg-transparent border-none p-0 focus-visible:ring-0"
+                              placeholder="Enter column name"
                             />
                           </div>
-                        </td>
+                        </th>
                       ))}
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => deleteRow(row.id)}
-                            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                      <th className="w-12 px-4 py-3 bg-white">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={addColumn}
+                          className="h-6 w-6"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {data.rows.map((row, rowIndex) => (
+                      <tr key={row.id} className="hover:bg-gray-50 group">
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <PlayIcon />
+                            <span className="text-sm text-gray-500">
+                              {rowIndex + 1}
+                            </span>
+                          </div>
+                        </td>
+                        {data.columns.map((column) => (
+                          <td
+                            key={`${row.id}-${column.id}`}
+                            className="px-4 py-3 whitespace-nowrap"
                           >
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
-                          <ChevronRight className="h-4 w-4 text-gray-400" />
-                        </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              {row.warning && column.id === "input" && (
+                                <WarningIcon />
+                              )}
+                              {row.link && column.id === "input" && (
+                                <svg
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                >
+                                  <path d="M6 8h4M8 6v4" stroke="currentColor" />
+                                </svg>
+                              )}
+                              <Input
+                                value={row.cells[column.id]}
+                                onChange={(e) =>
+                                  updateCellValue(
+                                    row.id,
+                                    column.id,
+                                    e.target.value
+                                  )
+                                }
+                                className={`bg-transparent border-none p-0 focus-visible:ring-0 ${
+                                  row.link && column.id === "input"
+                                    ? "text-blue-500 underline"
+                                    : ""
+                                }`}
+                              />
+                            </div>
+                          </td>
+                        ))}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteRow(row.id)}
+                              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                            </Button>
+                            <ChevronRight className="h-4 w-4 text-gray-400" />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    <tr>
+                      <td colSpan={data.columns.length + 2}>
+                        <Button
+                          variant="ghost"
+                          className="w-full h-12 hover:bg-gray-50"
+                          onClick={addRow}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Row
+                        </Button>
                       </td>
                     </tr>
-                  ))}
-                  <tr>
-                    <td colSpan={data.columns.length + 2}>
-                      <Button
-                        variant="ghost"
-                        className="w-full h-12 hover:bg-gray-50"
-                        onClick={addRow}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Row
-                      </Button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -418,3 +360,4 @@ export default function DataGrid() {
     </div>
   );
 }
+
