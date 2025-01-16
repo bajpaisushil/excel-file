@@ -435,78 +435,11 @@ export default function DataGrid() {
         </div>
       </header>
 
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-3 p-4 bg-white border-b">
-        <div className="flex-1 w-[200px]">
-          <div className="relative w-full">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-            <Input placeholder="Search" className="pl-8 bg-white" />
-          </div>
-        </div>
-        <div className="flex flex-1 items-center gap-4 text-sm text-gray-500">
-          <div className="flex items-center gap-2">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <rect
-                x="1"
-                y="1"
-                width="14"
-                height="14"
-                rx="2"
-                stroke="currentColor"
-              />
-              <path d="M4 8h8M4 4h8M4 12h8" stroke="currentColor" />
-            </svg>
-            <span>{data.rows.length}/1 Row</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <rect
-                x="1"
-                y="1"
-                width="14"
-                height="14"
-                rx="2"
-                stroke="currentColor"
-              />
-              <path d="M8 4v8M4 8h8" stroke="currentColor" />
-            </svg>
-            <span>{data.columns.length}/3 Column</span>
-          </div>
-          <Button variant="outline" size="icon" className="h-8 w-8 border-0">
-            <Filter className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon" className="h-8 w-8 border-0">
-            <ArrowDownUp className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button className="bg-[#1C2834] hover:bg-[#2C3844] text-white flex items-center justify-center">
-            <Sparkles />
-            Enrich
-          </Button>
-          <Button variant="outline" size="icon" className="h-8 w-8 border-0">
-            <Share2 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 border-0"
-            onClick={() => exportToExcel(data)}
-          >
-            <Download className="h-4 w-4" />
-          </Button>
-
-          <Button variant="outline" size="icon" className="h-8 w-8 border-0">
-            <Trash2 className="h-4 w-4" color="red" />
-          </Button>
-        </div>
-      </div>
-
       {/* Grid with sidebar */}
       <div className="flex flex-1">
         {/* Sidebar */}
-        <div className="w-12 bg-white border-r">
-          <div className="flex flex-col items-center py-4 gap-4">
+        <div className="w-16 bg-white border-r">
+          <div className="flex flex-col items-center p-4 gap-4">
             <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-600">
               <TableIcon />
             </button>
@@ -523,6 +456,100 @@ export default function DataGrid() {
         <div className="flex-1 overflow-auto">
           <div className="min-w-full inline-block align-middle">
             <div className="overflow-hidden">
+              {/* Toolbar */}
+              <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-white border-b">
+                <div className="flex items-center justify-center">
+                  <div className="w-[200px] mr-4">
+                    <div className="relative w-full">
+                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+                      <Input placeholder="Search" className="pl-8 bg-white" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-2">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
+                        <rect
+                          x="1"
+                          y="1"
+                          width="14"
+                          height="14"
+                          rx="2"
+                          stroke="currentColor"
+                        />
+                        <path d="M4 8h8M4 4h8M4 12h8" stroke="currentColor" />
+                      </svg>
+                      <span>{data.rows.length}/1 Row</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
+                        <rect
+                          x="1"
+                          y="1"
+                          width="14"
+                          height="14"
+                          rx="2"
+                          stroke="currentColor"
+                        />
+                        <path d="M8 4v8M4 8h8" stroke="currentColor" />
+                      </svg>
+                      <span>{data.columns.length}/3 Column</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 border-0"
+                    >
+                      <Filter className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 border-0"
+                    >
+                      <ArrowDownUp className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button className="bg-[#1C2834] hover:bg-[#2C3844] text-white flex items-center justify-center">
+                    <Sparkles />
+                    Enrich
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 border-0"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 border-0"
+                    onClick={() => exportToExcel(data)}
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 border-0"
+                  >
+                    <Trash2 className="h-4 w-4" color="red" />
+                  </Button>
+                </div>
+              </div>
               <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
